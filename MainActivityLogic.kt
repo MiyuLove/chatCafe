@@ -1,62 +1,44 @@
 package com.chatproject.chatcafeproject.Logic
 
 import android.app.Activity
-import android.content.Context
-import androidx.core.app.ActivityCompat
-import com.chatproject.chatcafeproject.chatDvUtil
-import com.chatproject.chatcafeproject.secureFile
-import kotlin.concurrent.timer
-import kotlin.system.exitProcess
+import android.content.Intent
+import com.chatproject.chatcafeproject.ChatUtil.chatDvUtil
+import com.chatproject.chatcafeproject.ChatUtil.secureFile
+import com.chatproject.chatcafeproject.SignIn
+import com.chatproject.chatcafeproject.second
+import kotlinx.coroutines.*
 
-public class mainActivityLogic (activity : Activity){
-    val activity = activity
+public class mainActivityLogic (act : Activity, second : Long){
+    val activity = act
     val cdu = chatDvUtil()
     lateinit var secureManager : secureFile
-
     var reconnectingNum = 0
 
     init{
         secureManager = secureFile(activity)
-        if(secureManager.checkNet)introTimer(4)
-        else reconnectNet()
+        GlobalScope.launch(Dispatchers.Main){
+            async {
+                delay(second)
+                introCheck()
+            }
+        }
     }
 
-    fun introTimer(second : Int){
-        var finisher = second
-        timer(period = 1000){
-            finisher--
-            if(finisher == 0){
-                //activity.finish()
-                //cancel()
-            }
+    suspend fun introCheck(){
+        if(reconnectingNum ++ == 7) {
+            System.exit(0)
+        }
+
+        cdu.logChat(reconnectingNum.toString())
+        if(secureManager.checkNet){
+            activity.startActivity(Intent(activity,SignIn::class.java))
+            activity.finish()
+        }
+        else{
+            secureManager.isNet()
+            delay(second)
+            introCheck()
         }
         return
-    }
-
-    fun reconnectNet(){
-        var finisher = 4
-        reconnectingNum ++
-        if(reconnectingNum == 8){
-            ActivityCompat.finishAffinity(activity)
-            exitProcess(0)
-        }
-
-        timer(period = 1000){
-            finisher--
-            if(finisher == 0){
-                secureManager.isNet()
-                if(secureManager.checkNet) {
-                    introTimer(1000)
-                    cancel()
-                }
-                else {
-                    reconnectNet()
-                    cancel()
-                }
-                cdu.logChat("reconnecting..." + reconnectingNum.toString())
-                cancel()
-            }
-        }
-
     }
 }
