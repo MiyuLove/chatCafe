@@ -4,19 +4,28 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.VectorConverter
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key.Companion.K
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -66,22 +75,47 @@ fun LoginScreen(){
         ){
             Column {
                 Row{
-                    LoginText("ID", 60,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.End)
+                    LoginText("I D", 60,
+                    modifier = Modifier.weight(1.5f),
+                    textAlign = TextAlign.Center)
 
-                    PasswordTextField(txt = "안녕하세요", modifier =
-                    Modifier.weight(4f))
+                    LogTextField(txt = "", modifier =
+                    Modifier
+                        .weight(4f)
+                        .padding(end = 20.dp))
                 }
-                LoginText("ID를 기억 못해요?", 20)
+                Row(Modifier.padding(5.dp)){
+                    Box(Modifier.weight(1.5f))
+
+                    LoginText("ID를 기억 못 하세요?", 20,
+                        modifier = Modifier
+                            .weight(4f)
+                            .clickable(enabled = true, onClick = {}),
+                        textAlign = TextAlign.Start)
+                }
             }
             Column{
                 Row{
-                    LoginText("PW", 60)
-                    PasswordTextField(txt = "안녕하세요", modifier =
-                    Modifier.weight(4f))
+
+                    LoginText("PW", 60,
+                        modifier = Modifier.weight(1.5f),
+                        textAlign = TextAlign.Center)
+
+                    LogTextField(txt = "", modifier =
+                    Modifier
+                        .weight(4f)
+                        .padding(end = 20.dp), "password")
                 }
-                LoginText("비밀번호도 모르겠네?", 20)
+
+                Row(Modifier.padding(5.dp)){
+                    Box(Modifier.weight(1.5f))
+
+                    LoginText("PW도 기억 못 하겠네", 20,
+                        modifier = Modifier
+                            .weight(4f)
+                            .clickable(enabled = true, onClick = {}),
+                        textAlign = TextAlign.Start)
+                }
             }
 
         }
@@ -102,8 +136,6 @@ fun LoginScreen(){
     }
 }
 
-
-
 @Composable
 fun LoginText(text : String, fontSize : Int
 ){
@@ -118,26 +150,42 @@ fun LoginText(text : String, fontSize : Int, modifier: Modifier,
 }
 
 @Composable
-fun PasswordTextField(
+fun LogTextField(txt : String, modifier: Modifier,text :String) {
+    var password by rememberSaveable{ mutableStateOf("")}
+    var passwordVisible by rememberSaveable{ mutableStateOf(false) }
+
+    TextField(
+        value = password,
+        onValueChange = { password = it },
+        modifier = modifier,
+        placeholder = {Text(txt)},
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color(0x45A7E3EB)
+        ),
+        singleLine = true,
+        visualTransformation = if(passwordVisible)
+            VisualTransformation.None
+            else PasswordVisualTransformation()
+    )
+}
+
+
+@Composable
+fun LogTextField(
     txt : String, modifier: Modifier
 ) {
     var text by remember{ mutableStateOf(TextFieldValue(txt)) }
 
     TextField(
         value = text,
-        onValueChange = { newText -> text = newText },
+        onValueChange = { text = it },
         modifier = modifier,
-        placeholder = {Text("*")}
+        placeholder = {Text(txt)},
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color(0x45A7E3EB)
+        ),
+        singleLine = true,
     )
-//    var password by rememberSaveable { mutableStateOf("") }
-
-  /*  TextField(
-        value = password,
-        onValueChange = { password = it },
-        label = { Text("Enter password") },
-        visualTransformation = PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-    )*/
 }
 
 @Preview(showBackground = true, showSystemUi = true)
