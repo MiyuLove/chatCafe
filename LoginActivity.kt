@@ -125,7 +125,10 @@ fun LoginScreen(){
             horizontalAlignment = Alignment.CenterHorizontally
             ){
             Button(
-                onClick = { lc.logInBtnClick() },
+                onClick = {
+                    lc.isLogIn(idValue, passwordValue)
+                    lc.logInBtnClick()
+                          },
 
             ){
                 Text("들 어 가 기", fontSize = 70.sp,
@@ -149,6 +152,7 @@ fun LoginText(text : String, fontSize : Int, modifier: Modifier,
     Text(text = text, fontSize = fontSize.sp, modifier = modifier, textAlign = textAlign)
 }
 
+var passwordValue = ""
 @Composable
 fun LogTextField(txt : String, modifier: Modifier,text :String) {
     var password by rememberSaveable{ mutableStateOf("")}
@@ -167,18 +171,17 @@ fun LogTextField(txt : String, modifier: Modifier,text :String) {
             VisualTransformation.None
             else PasswordVisualTransformation()
     )
+    passwordValue = password
 }
-
-
+var idValue = ""
 @Composable
 fun LogTextField(
     txt : String, modifier: Modifier
 ) {
-    var text by remember{ mutableStateOf(TextFieldValue(txt)) }
-
+    var textID by rememberSaveable{ mutableStateOf("")}
     TextField(
-        value = text,
-        onValueChange = { text = it },
+        value = textID,
+        onValueChange = { textID = it },
         modifier = modifier,
         placeholder = {Text(txt)},
         colors = TextFieldDefaults.textFieldColors(
@@ -186,6 +189,7 @@ fun LogTextField(
         ),
         singleLine = true,
     )
+    idValue = textID
 }
 
 @Preview(showBackground = true, showSystemUi = true)
