@@ -6,25 +6,33 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.exercise.cafechatmaterial3ver.Logic.LoginView
 import com.exercise.cafechatmaterial3ver.composeAct.LogTextField
+import com.exercise.cafechatmaterial3ver.composeAct.SimpleInput
 import com.exercise.cafechatmaterial3ver.navigation.SignForScreens
 
 //third nav screen of Sign for
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BaseInfoScreen(nc : NavController){
+fun BaseInfoScreen(
+    nc : NavController, model : LoginView
+){
     Column(verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
         Column(modifier = Modifier.weight(2f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center) {
             Spacer(modifier = Modifier.weight(1f))
-            LogTextField(txt = "아 이 디", modifier = Modifier)
+
+            SimpleInput(viewModel = model, 3)
+
             Spacer(modifier = Modifier.weight(1f))
             LogTextField(txt = "비 밀 번 호", modifier = Modifier)
             Spacer(modifier = Modifier.weight(1f))
@@ -57,8 +65,5 @@ fun BaseInfoScreen(nc : NavController){
                     .fillMaxHeight(0.3f),
                 nc = nc)
         }
-
     }
-
-
 }

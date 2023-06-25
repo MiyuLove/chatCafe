@@ -1,7 +1,6 @@
 package com.exercise.cafechatmaterial3ver.SignFor
 
 import android.app.Activity
-import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.exercise.cafechatmaterial3ver.ViewActivity
 import com.exercise.cafechatmaterial3ver.composeAct.LogTextField
 
 
@@ -48,7 +46,6 @@ fun SettingInfroScreen(nc : NavController){
             verticalAlignment = Alignment.CenterVertically){
 
             signForBtn(oc = {
-                activity?.startActivity(Intent(activity, ViewActivity::class.java))
                 activity?.finish()
             }, s = "입 력 하 기",
                 modifier = Modifier

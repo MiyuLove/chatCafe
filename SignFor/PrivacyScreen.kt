@@ -11,20 +11,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.exercise.cafechatmaterial3ver.Logic.LoginView
 import com.exercise.cafechatmaterial3ver.composeAct.LogTextField
+import com.exercise.cafechatmaterial3ver.composeAct.SimpleInput
 import com.exercise.cafechatmaterial3ver.navigation.SignForScreens
 
 //second nav screen of Sign for
 
 @Composable
-fun PrivacyScreen(nc : NavController){
+fun PrivacyScreen(nc : NavController, model : LoginView){
     Column(verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally) {
         Column(modifier = Modifier.weight(2f),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
             Spacer(modifier = Modifier.weight(1f))
-            LogTextField(txt = "이름", modifier = Modifier)
+
+            SimpleInput(viewModel = model,0)
             Spacer(modifier = Modifier.weight(1f))
             LogTextField(txt = "성별", modifier = Modifier)
             Spacer(modifier = Modifier.weight(1f))
