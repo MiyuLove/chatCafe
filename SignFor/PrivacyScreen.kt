@@ -2,9 +2,8 @@ package com.exercise.cafechatmaterial3ver.SignFor
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,8 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.exercise.cafechatmaterial3ver.Logic.LoginView
-import com.exercise.cafechatmaterial3ver.composeAct.LogTextField
-import com.exercise.cafechatmaterial3ver.composeAct.SimpleInput
+import com.exercise.cafechatmaterial3ver.composeAct.NavButton
+import com.exercise.cafechatmaterial3ver.composeAct.SexButtonsGroup
+import com.exercise.cafechatmaterial3ver.composeAct.SignForTextField
 import com.exercise.cafechatmaterial3ver.navigation.SignForScreens
 
 //second nav screen of Sign for
@@ -25,40 +25,20 @@ fun PrivacyScreen(nc : NavController, model : LoginView){
         Column(modifier = Modifier.weight(2f),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
-            Spacer(modifier = Modifier.weight(1f))
-
-            SimpleInput(viewModel = model,0)
-            Spacer(modifier = Modifier.weight(1f))
-            LogTextField(txt = "성별", modifier = Modifier)
-            Spacer(modifier = Modifier.weight(1f))
-            LogTextField(txt = "생년월일", modifier = Modifier)
-            Spacer(modifier = Modifier.weight(1f))
-            LogTextField(txt = "폰번호", modifier = Modifier)
             Spacer(modifier = Modifier.weight(2f))
+            SignForTextField(caption = "이름", viewModel = model , a = 0, placeholderText = "한글만 입력 가능합니다.",
+                modifier = Modifier.fillMaxWidth().padding(start = 40.dp, end = 40.dp))
+            Spacer(modifier = Modifier.weight(1f))
+            SexButtonsGroup(modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 40.dp, end = 40.dp))
+            Spacer(modifier = Modifier.weight(1f))
         }
 
-        Row(modifier = Modifier
+        val oc = arrayOf({nc.navigate(SignForScreens.AgeAndPN.route)},{nc.navigate(SignForScreens.Terms.route)})
+        val ta = arrayOf("입 력 하 기","뒤 로 가 기")
+        NavButton(modifier = Modifier
             .weight(1f)
-            .padding(30.dp),
-            verticalAlignment = Alignment.CenterVertically){
-
-            signForBtn(oc = {
-                nc.navigate(SignForScreens.BaseInfo.route)
-            }, s = "입 력 하 기",
-                modifier = Modifier
-                    .weight(0.4f)
-                    .fillMaxHeight(0.3f),
-                nc = nc)
-
-            Spacer(Modifier.weight(0.1f))
-
-            signForBtn(oc = {
-                nc.popBackStack()
-            },s = "뒤 로 가 기",
-                modifier = Modifier
-                    .weight(0.4f)
-                    .fillMaxHeight(0.3f),
-                nc = nc)
-        }
+            .padding(30.dp), oc,ta)
     }
 }

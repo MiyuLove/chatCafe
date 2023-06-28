@@ -3,7 +3,6 @@ package com.exercise.cafechatmaterial3ver.SignFor
 import android.app.Activity
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -12,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,15 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.exercise.cafechatmaterial3ver.R
+import com.exercise.cafechatmaterial3ver.composeAct.signForBtn
 import com.exercise.cafechatmaterial3ver.navigation.SignForScreens
+import com.exercise.cafechatmaterial3ver.ui.theme.ColorCopy
 
 val termString =
     "수 락 하 기 뒤 로 가 기\n수 락 하 기 뒤 로 가 기\n안녕하세요 계란님 계란을 먹고 감동을 받으면 감동란이 된다는 것을 알고 계신가요?\n" +
@@ -70,7 +64,7 @@ fun TermsScreen(nc : NavController){
                 .padding(start = 60.dp, end = 60.dp, top = 60.dp)
                 .weight(2f)
                 .verticalScroll(scrollState)
-                .border(width = 2.dp, color = Color.Black,shape = RectangleShape)
+                .border(width = 2.dp, color = ColorCopy().TFFontColor,shape = RectangleShape)
         ) {
             Text(termString, fontSize = 20.sp, color = Color.Black, lineHeight = 20.sp,
             modifier = Modifier.padding(5.dp))
@@ -81,39 +75,27 @@ fun TermsScreen(nc : NavController){
             .padding(30.dp),
             verticalAlignment = Alignment.CenterVertically){
 
-            signForBtn(oc = {
-                nc.navigate(SignForScreens.Privacy.route)
-            }, s = "수 락 하 기",
-                modifier = Modifier.weight(0.4f).fillMaxHeight(0.3f),
-                nc = nc)
+            signForBtn(
+                text = "수 락 하 기",
+                oc = { nc.navigate(SignForScreens.Privacy.route) },
+                modifier = Modifier
+                    .weight(0.4f)
+                    .fillMaxHeight(0.3f),
+                fontSize = 30
+            )
 
             Spacer(Modifier.weight(0.1f))
 
             val activity = LocalContext.current as? Activity
-            signForBtn(oc = {activity?.finish()},s = "뒤 로 가 기",
-                modifier = Modifier.weight(0.4f).fillMaxHeight(0.3f),
-                nc = nc)
+
+            signForBtn(
+                text = "뒤 로 가 기",
+                oc = { activity?.finish() },
+                modifier = Modifier
+                    .weight(0.4f)
+                    .fillMaxHeight(0.3f),
+                fontSize = 30
+            )
         }
-    }
-}
-
-@Composable
-fun signForBtn(oc : ()-> Unit ,s : String, modifier: Modifier, nc :NavController){
-    Button(
-        onClick = oc,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = colorResource(id = R.color.main_color)
-        )
-    , modifier = modifier,
-        contentPadding = PaddingValues(start =  0.dp, end = 0.dp),
-
-    ){
-        Text(
-            text = s,
-            fontSize = 30.sp,
-            maxLines = 1,
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily(Font(R.font.base_font)),
-        )
     }
 }

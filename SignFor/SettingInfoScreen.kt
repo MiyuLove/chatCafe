@@ -4,9 +4,7 @@ import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,7 +13,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.exercise.cafechatmaterial3ver.Logic.LoginView
 import com.exercise.cafechatmaterial3ver.composeAct.LogTextField
+import com.exercise.cafechatmaterial3ver.composeAct.NavButton
+import com.exercise.cafechatmaterial3ver.composeAct.SignForTextField
 
 
 //final nav screen of Sign for
@@ -24,7 +25,7 @@ import com.exercise.cafechatmaterial3ver.composeAct.LogTextField
 //this is not recycle
 
 @Composable
-fun SettingInfroScreen(nc : NavController){
+fun SettingInfroScreen(nc : NavController, model : LoginView){
     val activity = LocalContext.current as? Activity
     Column(verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
@@ -34,30 +35,16 @@ fun SettingInfroScreen(nc : NavController){
             Spacer(modifier = Modifier.weight(2f).background(Color.Black))
             LogTextField(txt = "프로필 사진", modifier = Modifier)
             Spacer(modifier = Modifier.weight(1f))
-            LogTextField(txt = "닉네임", modifier = Modifier)
+            SignForTextField(caption = "닉네임", viewModel = model , a = 3, placeholderText = "특수문자와 비속어는 안 돼요")
             Spacer(modifier = Modifier.weight(0.5f))
-            LogTextField(txt = "소개글 60자 이하", modifier = Modifier)
+            SignForTextField(caption = "닉네임", viewModel = model , a = 5, placeholderText = "자유롭게 적어주세요")
             Spacer(modifier = Modifier.weight(1f))
         }
 
-        Row(modifier = Modifier
-            .weight(1f)
-            .padding(30.dp),
-            verticalAlignment = Alignment.CenterVertically){
+        val oc = arrayOf({ val q = activity?.finish()},{
+            val q = activity?.finish()})
+        val ta = arrayOf("입 력 하 기","난 중 에 !")
+        NavButton(modifier = Modifier.weight(1f).padding(30.dp), oc,ta)
 
-            signForBtn(oc = {
-                activity?.finish()
-            }, s = "입 력 하 기",
-                modifier = Modifier
-                    .weight(0.4f)
-                    .fillMaxHeight(0.3f),
-                nc = nc)
-
-            Spacer(Modifier.weight(0.1f))
-
-            signForBtn(oc = {activity?.finish()},s = "나 중 에 !",
-                modifier = Modifier.weight(0.4f).fillMaxHeight(0.3f),
-                nc = nc)
-        }
     }
 }
