@@ -1,5 +1,11 @@
 package com.exercise.cafechatmaterial3ver.composeAct
 
+import android.graphics.Bitmap
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,9 +32,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -87,40 +99,38 @@ fun signForBtn(
 
 @Composable
 fun SexButton(
+    onClick: () -> Unit,
     pResource :Int,
     sex : String,
-    modifier: Modifier
+    modifier: Modifier,
+    buttonColor : Color
 ){
-    var selected by remember{mutableStateOf(false)}
-
-    var sexButtonColor = if(selected)ColorCopy().BtnColor else Color.White
-
     Button(
-        onClick = {
-                  selected = !selected
-        },
+        onClick =  onClick,
         shape = RoundedCornerShape(50.dp),
         contentPadding = PaddingValues(15.dp),
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
-            containerColor = sexButtonColor,
-
+            containerColor = buttonColor,
         )
     ){
         Box(
         ){
-            Row(){
+            Row(verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center){
                 Icon(painterResource(id = pResource),"", tint = Color.Unspecified)
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(sex, color = Color.Black)
+                Text(sex, color = Color.Black, fontStyle = FontStyle(R.font.base_font), fontSize = 25.sp)
             }
         }
     }
 }
 
+
 @Composable
 fun SexButtonsGroup(
-    modifier: Modifier
+    modifier: Modifier,
+    model : LoginView
 ){
     Column(modifier = modifier,) {
         textFieldCaptionText(caption = "성별", modifier = Modifier)
@@ -129,10 +139,24 @@ fun SexButtonsGroup(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.border(2.dp,ColorCopy().TFColor)
         ){
-            SexButton(pResource = R.drawable.pictogram_man, sex = "남성", modifier = Modifier.weight(0.4f).padding(end=10.dp))
-            SexButton(pResource = R.drawable.pictogram_woman, sex = "여성", modifier = Modifier.weight(0.4f).padding(start = 10.dp))
+            SexButton({model.updateMethod(1,"1")},
+                pResource = R.drawable.pictogram_man, sex = "남", modifier = Modifier
+                    .weight(0.4f)
+                    .padding(end = 10.dp), buttonColor = when(model.uiStates[1].value) {
+                    "1" -> ColorCopy().BtnColor
+                    "2" -> Color.White
+                    else -> Color.White
+                })
+
+            SexButton({ model.updateMethod(1,"2") },
+                pResource = R.drawable.pictogram_woman, sex = "여", modifier = Modifier
+                    .weight(0.4f)
+                    .padding(start = 10.dp),buttonColor = when(model.uiStates[1].value) {
+                    "2" -> ColorCopy().BtnColor
+                    "1" -> Color.White
+                    else -> Color.White
+                })
         }
-        
     }
 }
 
@@ -189,11 +213,11 @@ fun AgeButton(
 @Composable
 fun AgeField(
     caption : String,
-    viewModel : LoginView,
+    model : LoginView,
     modifier: Modifier
 ){
-    var age by rememberSaveable{ mutableStateOf(20) }
-    viewModel.updateMethod(2,age)
+    var age by rememberSaveable{ mutableStateOf(if(model.uiStates[3].value=="")20 else model.uiStates[3].value.toInt()) }
+    model.updateMethod(3,age)
 
     Column(
         modifier = modifier
@@ -216,7 +240,7 @@ fun AgeField(
                 {
                     age -=5
                     if(age < 0) age = 1
-                    viewModel.updateMethod(2,age)
+                    model.updateMethod(3,age)
                 },
                 modifier = btnModifier
             )
@@ -225,12 +249,12 @@ fun AgeField(
                 {
                     age -=1
                     if(age < 0) age = 1
-                    viewModel.updateMethod(2,age)
+                    model.updateMethod(3,age)
                 },
                 modifier = btnModifier
             )
             Text(
-                text = viewModel.uiStates[2].value,
+                text = model.uiStates[3].value,
                 color = ColorCopy().MainColor,
                 fontSize = 30.sp,
                 textAlign = TextAlign.Center,
@@ -241,16 +265,48 @@ fun AgeField(
             AgeButton(text = "+1",{
                 age +=1
                 if(age > 100) age = 100
-                viewModel.updateMethod(2,age)
+                model.updateMethod(3,age)
             },
                 modifier = btnModifier)
             AgeButton(text = "+5", {
                 age +=5
                 if(age > 100) age = 100
-                viewModel.updateMethod(2,age)
+                model.updateMethod(3,age)
             }, modifier = btnModifier)
+        }
+    }
+}
 
+@Composable
+fun RoundedImageSet (
+    modifier: Modifier
+){
+    val images = ImageBitmap.imageResource(id = R.drawable.pictogram_man).asAndroidBitmap()
+
+    val result = remember{ mutableStateOf<Bitmap?>(images) }
+    val cameraLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()){
+            result.value = it
         }
 
+    result.value?.let { image ->
+        Image (image.asImageBitmap(), null)
     }
+
+
+
+    Column() {
+        IconButton(
+            onClick = {
+                cameraLauncher.launch()
+            },
+            modifier = modifier.then(Modifier.background(Color.Magenta)),
+
+            ) {
+
+                //Image(painter = painterResource(id = R.drawable.latteart), contentDescription = "good")
+            result
+        }
+    }
+
 }

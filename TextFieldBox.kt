@@ -34,13 +34,14 @@ import com.exercise.cafechatmaterial3ver.ChatUtil.chatDvUtil
 import com.exercise.cafechatmaterial3ver.Logic.LoginView
 import com.exercise.cafechatmaterial3ver.R
 import com.exercise.cafechatmaterial3ver.ui.theme.ColorCopy
+
 val cdu = chatDvUtil()
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun LogTextField(
     caption : String,
-    viewModel: LoginView ,
+    model: LoginView ,
     a:Int,
     modifier: Modifier = Modifier,
     captionPadding : Int
@@ -53,15 +54,15 @@ fun LogTextField(
             fontSize = 30.sp,
         )
         TextField(
-            value =  viewModel.uiStates[a].value,
+            value =  model.uiStates[a].value,
             onValueChange = {
-                viewModel.updateMethod(a,it)
+                model.updateMethod(a,it)
             },
             trailingIcon ={
-                if(viewModel.uiStates[a].value.isEmpty()) null
+                if(model.uiStates[a].value.isEmpty()) null
                 else
                 IconButton(
-                    onClick = { viewModel.updateMethod(a,"") }){
+                    onClick = { model.updateMethod(a,"") }){
                 Icon(
                     Icons.Filled.Clear,"",
                     tint = ColorCopy().TFFontColor )
@@ -126,7 +127,7 @@ fun LogTextField(txt : String, modifier: Modifier) {
 @Composable
 fun SignForTextField(
     caption : String,
-    viewModel: LoginView,
+    model: LoginView,
     a:Int,
     modifier: Modifier = Modifier,
     placeholderText : String,
@@ -135,16 +136,17 @@ fun SignForTextField(
         textFieldCaptionText(caption = caption,modifier)
 
         TextField(
-            value =  viewModel.uiStates[a].value,
+            value =  model.uiStates[a].value,
             onValueChange = {
-                viewModel.updateMethod(a,it)
+                if(caption == "이름")model.updateKoreanMethod(a,it)
+                else model.updateMethod(a,it)
             },
             placeholder = { Text(text = placeholderText)},
             trailingIcon ={
-                if(viewModel.uiStates[a].value.isEmpty()) null
+                if(model.uiStates[a].value.isEmpty()) null
                 else
                     IconButton(
-                        onClick = { viewModel.updateMethod(a,"") }){
+                        onClick = { model.updateMethod(a,"") }){
                         Icon(
                             Icons.Filled.Clear,"",
                             tint = Color.Black )
@@ -162,34 +164,74 @@ fun SignForTextField(
                 cursorColor = ColorCopy().FontColor
             ),
         )
-
     }
+}
+@Composable
+fun LimitedSignForTextField(
+    caption : String,
+    model : LoginView,
+    a:Int,
+    modifier: Modifier = Modifier,
+    placeholderText : String,
+){
+    textFieldCaptionText(caption = caption,modifier)
+    TextField(
+        value =  model.uiStates[a].value,
+        onValueChange = {
+            if(caption == "이름")model .updateKoreanMethod(a,it)
+            else model.updateMethod(a,it)
+        },
+        placeholder = { Text(text = placeholderText)},
+        trailingIcon ={
+            if(model.uiStates[a].value.isEmpty()) null
+            else
+                IconButton(
+                    onClick = { model.updateMethod(a,"") }){
+                    Icon(
+                        Icons.Filled.Clear,"",
+                        tint = Color.Black )
+                }
+        },
+        modifier = modifier,
+        singleLine = true,
+        shape = RoundedCornerShape(8.dp),
+        textStyle = TextStyle(),
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = ColorCopy().TFColor,
+            textColor = ColorCopy().FontColor,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.White,
+            cursorColor = ColorCopy().FontColor
+        ),
+    )
 }
 
 
 //폰 번호는 밑에 DateTextField 사용해서 만들면 됨
 @Composable
-fun DateTextField(
+fun PhoneTextField(
     caption : String,
-    viewModel: LoginView,
+    model : LoginView,
     a:Int,
     modifier: Modifier = Modifier,
     placeholderText : String,
 ){
     Column(){
-        textFieldCaptionText(caption = caption)
+        textFieldCaptionText(caption = caption, modifier = modifier)
 
         TextField(
-            value =  viewModel.uiStates[a].value,
+            value =  model.uiStates[a].value,
             onValueChange = {
-                viewModel.textFieldNumberUpdate(2,8,it, arrayListOf(4,2,2))
+                if(cdu.isPhoneNumber(it)){
+                    model.textFieldNumberUpdate(2,it)
+                }
             },
             placeholder = { Text(text = placeholderText, color = Color.Black)},
             trailingIcon ={
-                if(viewModel.uiStates[a].value.isEmpty()) null
+                if(model.uiStates[a].value.isEmpty()) null
                 else
                     IconButton(
-                        onClick = { viewModel.updateMethod(a,"") }){
+                        onClick = { model.updateMethod(a,"") }){
                         Icon(
                             Icons.Filled.Clear,"",
                             tint = Color.Black )
